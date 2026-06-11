@@ -1,0 +1,199 @@
+erDiagram
+
+    Roles ||--|{ Usuarios : tiene
+    Estado_usuario ||--|{ Usuarios : tiene
+    Usuarios ||--|{ Telefonos : tiene
+    Tipo_telefono ||--|{ Telefonos : clasifica
+    Usuarios ||--o{ Prestamos : autoriza
+    Usuarios ||--o| Credenciales : tiene
+    Editoriales ||--|{Libros : publica
+    Usuarios ||--|{ Prestamos : realiza
+    Estado_prestamos ||--|{ Prestamos : tiene
+    Prestamos ||--o| Multas : genera
+    Categorias ||--|{ Libros : clasifica
+    Libros ||--|{ Libro_autor : tiene
+    Autores ||--|{ Libro_autor : escribe
+    Autor_nacionalidad ||--|{ Autores : pertenece_a
+
+    Estados_ejemplar ||--|{Ejemplares : pertenece
+    Libros ||--|{Ejemplares : tiene
+    Ejemplares ||--|{Prestamos : tiene
+
+    Estados_multa||--|{Multas : tiene
+    Usuarios||--|{Direcciones: estar
+    Municipios||--|{Direcciones: tiene
+
+    Estados_reserva||--|{Reservas: esta
+    Usuarios||--|{Reservas:esta
+    Libros||--|{Reservas: tiene
+
+    Usuarios{
+        int PK_usuario
+        string nombre
+        string apellido_paterno
+        string apellido_materno
+        date fecha_nacimiento
+        string genero
+        string curp
+        date fecha_registro
+        string foto_url
+        int FK_rol
+        int FK_estado
+    }
+
+    Direcciones{
+        int PK_direccion
+        int FK_usuario
+        string calle
+        string numero_exterior
+        string numero_interior
+        string colonia
+        string codigo_postal
+        int FK_municipio
+    }
+
+    Municipios{
+        int Pk_municipio
+        string nombre
+    }
+
+    Credenciales{
+        int PK_credencial
+        int FK_usuario
+        string correo
+        string contrasena
+    }
+
+
+    Telefonos{
+        int PK_telefono
+        int FK_usuario
+        string numero
+        int FK_tipo
+    }
+
+    Tipo_telefono{
+        int PK_tipo
+        string nombre
+    }
+
+    Roles{
+        int PK_rol
+        string nombre
+    }
+
+    Estado_usuario{
+        int PK_estado
+        string nombre
+    }
+
+    Prestamos{
+        int PK_prestamo
+        int FK_usuario
+        int FK_usuario_admin
+        date fecha_registro
+        date fecha_limite
+        date fecha_devolucion
+        int FK_estado
+        int FK_ejemplar
+    }
+
+    Estado_prestamos{
+        int PK_estado
+        string nombre
+    }
+
+
+    Multas{
+        int PK_multa
+        int FK_prestamo
+        int dias_retraso
+        decimal costo_unitario
+        date fecha_registro
+        date fecha_pago
+        decimal importe
+        int FK_estado
+    }
+
+    Estados_multa{
+        int PK_estado
+        string nombre
+    }
+
+    Idiomas||--|{Libros: tiene
+
+    Libros{
+        int PK_libro
+        int FK_categoria
+        string titulo
+        string signopsis
+        string isbn
+        int numero_paginas
+        int anio
+        string portada_url
+        int FK_idioma
+        int FK_editorial
+    }
+
+    Idiomas{
+        int PK_idioma
+        string nombre
+    }
+
+    Editoriales{
+        int PK_editorial
+        string nombre
+    }
+
+    Categorias{
+        int PK_categoria
+        string nombre
+        string descripcion
+    }
+
+    Autores{
+        int PK_autor
+        string nombre
+        string apellido_paterno
+        string apellido_materno
+        int FK_nacionalidad
+    }
+
+    Autor_nacionalidad{
+        int PK_nacionalidad
+        string nombre
+    }
+
+    Libro_autor{
+        int PK_libro_autor
+        int FK_autor
+        int FK_libro
+    }
+
+    Ejemplares{
+        int PK_ejemplar
+        int FK_libro
+        string codigo
+        int FK_estado
+    }
+
+    Estados_ejemplar{
+        int PK_estado
+        string nombre
+    }
+
+    
+
+    Reservas{
+        int PK_reserva
+        int FK_usuario
+        int FK_libro
+        date fecha_reserva
+        date fecha_limite_recogida
+        int FK_estado
+    }
+
+    Estados_reserva{
+        int PK_estado
+        string nombre
+    }
