@@ -1,0 +1,65 @@
+package com.api.biblioteca.models;
+
+import java.util.List;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "libros")
+public class Libro {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pk_libro")
+    private Long id;
+
+    @Column(nullable = false)
+    private String titulo;
+
+    @Column(nullable = true, length = 500)
+    private String sinopsis;
+
+    @Column(nullable = false, unique = true)
+    private String isbn;
+
+    @Column(name = "numero_paginas",nullable = false)
+    private int numeroPagina;
+
+    @Column(nullable = false)
+    private int anio;
+
+    @Column(name = "portada_url")
+    private String portadaUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_categoria",nullable = false)
+    private Categoria categoria;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_editorial",nullable = false)
+    private Editorial editorial;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_idioma",nullable = false)
+    private Idioma idioma;
+
+    @ManyToMany
+    @JoinTable(
+        name = "libro_autor",
+        joinColumns = @JoinColumn(name = "fk_libro"),
+        inverseJoinColumns = @JoinColumn(name = "fk_autor")
+    )
+    private List<Autor> autores;
+
+    @OneToMany(mappedBy = "libro")
+    private List<Ejemplar> ejemplares;
+}

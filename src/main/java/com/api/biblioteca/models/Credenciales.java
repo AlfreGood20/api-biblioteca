@@ -1,30 +1,30 @@
 package com.api.biblioteca.models;
 
-import java.util.List;
-import com.api.biblioteca.enums.RolNombre;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "roles")
-public class Rol {
+@Table(name = "credenciales")
+public class Credenciales {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "pk_rol")
+    @Column(name = "pk_credencial")
     private Long id;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true)
-    private RolNombre nombre;
+    private String correo;
 
-    @OneToMany(mappedBy = "rol")
-    private List<Usuario> usuarios;
+    @Column(nullable = false)
+    private String contrasena;
+
+    @OneToOne
+    @JoinColumn(name = "fk_usuario", nullable = false, unique = true)
+    private Usuario usuario;
 }

@@ -1,0 +1,69 @@
+package com.api.biblioteca.models;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "usuarios")
+public class Usuario {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pk_usuario")
+    private Long id;
+
+    @Column(nullable = false)
+    private String nombre;
+
+    @Column(name = "apellido_paterno", nullable = false)
+    private String apellidoPaterno;
+
+    @Column(name = "apellido_materno", nullable = false)
+    private String apellidoMaterno;
+
+    @Column(name = "fecha_nacimiento", nullable = false)
+    private LocalDate fechaNacimiento;
+
+    @Column(nullable = false)
+    private String genero;
+
+    @Column(nullable = true)
+    private String curp;
+
+    @CreationTimestamp
+    @Column(name = "fecha_registro", updatable = false)
+    private LocalDateTime fechaRegistro;
+
+    @Column(name = "foto_url", nullable = true)
+    private String fotoUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_rol",nullable = false)
+    private Rol rol;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_estado",nullable = false)
+    private EstadoUsuario estado;
+
+    @OneToOne(mappedBy = "usuario")
+    private Credenciales credencial;
+
+    @OneToMany(mappedBy = "usuario")
+    private List<Telefono> telefonos;
+
+    @OneToMany(mappedBy = "usuario")
+    private List<Direccion> direcciones;
+}
