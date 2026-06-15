@@ -27,10 +27,10 @@ public class Direccion {
     @Column(nullable = false)
     private String calle;
 
-    @Column(name = "numero_exterior", nullable = true)
+    @Column(name = "numero_exterior")
     private String numeroExterior;
 
-    @Column(name = "numero_interior", nullable = true)
+    @Column(name = "numero_interior")
     private String numeroInterior;
 
     @Column(nullable = false)

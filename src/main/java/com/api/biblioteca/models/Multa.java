@@ -1,5 +1,6 @@
 package com.api.biblioteca.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import jakarta.persistence.Column;
@@ -35,13 +36,13 @@ public class Multa {
     private LocalDateTime fechaRegistro;
 
     @Column(name = "costo_unitario", nullable = false)
-    private Double costoUnitario;
+    private BigDecimal costoUnitario;
 
     @Column(name = "fecha_pago")
     private LocalDateTime fechaPago;
 
     @Column(nullable = false)
-    private Double importe;
+    private BigDecimal importe;
 
     @OneToOne
     @JoinColumn(name = "fk_prestamo", nullable = false, unique = true)

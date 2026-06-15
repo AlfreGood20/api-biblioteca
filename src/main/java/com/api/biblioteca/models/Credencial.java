@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Credenciales {
+public class Credencial {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

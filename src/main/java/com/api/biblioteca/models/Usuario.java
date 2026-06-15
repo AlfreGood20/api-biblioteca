@@ -64,7 +64,7 @@ public class Usuario {
     private EstadoUsuario estado;
 
     @OneToOne(mappedBy = "usuario")
-    private Credenciales credencial;
+    private Credencial credencial;
 
     @OneToMany(mappedBy = "usuario")
     private List<Telefono> telefonos;
