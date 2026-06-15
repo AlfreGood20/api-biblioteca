@@ -6,13 +6,20 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "nacionalidades")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Nacionalidad {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pk_nacionalidad")
     private Long id;
 
     @Column(name = "nombre", nullable = false, unique = true)

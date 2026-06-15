@@ -10,10 +10,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "prestamos")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Prestamo {
 
     @Id
@@ -36,7 +43,7 @@ public class Prestamo {
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "fk_usuario_admin", nullable = false)
+    @JoinColumn(name = "fk_usuario_admin")
     private Usuario usuarioAdmin;
 
     @ManyToOne
@@ -46,4 +53,7 @@ public class Prestamo {
     @ManyToOne
     @JoinColumn(name = "fk_ejemplar", nullable = false)
     private Ejemplar ejemplar;
+
+    @OneToOne(mappedBy = "prestamo")
+    private Multa multa;
 }

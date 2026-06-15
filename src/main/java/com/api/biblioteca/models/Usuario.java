@@ -3,7 +3,6 @@ package com.api.biblioteca.models;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.hibernate.annotations.CreationTimestamp;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,9 +14,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "usuarios")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Usuario {
 
     @Id
@@ -47,7 +52,7 @@ public class Usuario {
     @Column(name = "fecha_registro", updatable = false)
     private LocalDateTime fechaRegistro;
 
-    @Column(name = "foto_url", nullable = true)
+    @Column(name = "foto_url")
     private String fotoUrl;
 
     @ManyToOne
