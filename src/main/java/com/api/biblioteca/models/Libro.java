@@ -38,7 +38,7 @@ public class Libro {
     private String isbn;
 
     @Column(name = "numero_paginas",nullable = false)
-    private int numeroPagina;
+    private int numeroPaginas;
 
     @Column(nullable = false)
     private int anio;
