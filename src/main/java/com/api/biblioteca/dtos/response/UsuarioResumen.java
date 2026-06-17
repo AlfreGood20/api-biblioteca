@@ -1,11 +1,10 @@
 package com.api.biblioteca.dtos.response;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record UsuarioResponse
+public record UsuarioResumen
 (
     Long id,
     String nombre,
@@ -17,14 +16,6 @@ public record UsuarioResponse
     LocalDate fechaNacimiento,
     String genero,
     String curp,
-    String correo,
-    @JsonProperty("fecha_registro")
-    LocalDateTime fechaRegistro,
-    @JsonProperty("foto_url")
-    String fotoUrl,
-    String rol,
-    String estado,
-    List<TelefonoResponse> telefonos,
-    List<DireccionResponse> direcciones
+    String correo
 ) {
 }

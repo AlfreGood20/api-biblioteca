@@ -3,6 +3,7 @@ package com.api.biblioteca.dtos.response;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.api.biblioteca.enums.EstadoPrestamoNombre;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record PrestamoResponse
@@ -14,10 +15,10 @@ public record PrestamoResponse
     LocalDate fechaLimite,
     @JsonProperty("fecha_devolucion")
     LocalDate fechaDevolucion,
-    String estado,
-    String usuario,
+    EstadoPrestamoNombre estado,
+    UsuarioResumen usuario,
     @JsonProperty("usuario_admin")
-    String usuarioAdmin,
+    UsuarioResumen usuarioAdmin,
     EjemplarResponse ejemplar
 ) {
 }
