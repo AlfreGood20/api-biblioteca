@@ -14,7 +14,21 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    //400
+    //400 VALIDACION DE NEGOCIO
+    public ResponseEntity<?> busineesProblem(BusinessExeption ex, HttpServletRequest request){
+
+        ResponseExeption response = ResponseExeption.builder()
+            .status(HttpStatus.BAD_REQUEST.value())
+            .error("Conflicto de recurso")
+            .menssaje(ex.getMessage())
+            .timestamp(LocalDateTime.now())
+            .build();
+
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    //400 VALIDACIONES DE FORMULARIO
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> badRequest(MethodArgumentNotValidException ex, HttpServletRequest request){
 
@@ -24,7 +38,7 @@ public class GlobalExceptionHandler {
         ResponseExeption response = ResponseExeption.builder()
             .status(HttpStatus.BAD_REQUEST.value())
             .error("Datos invalidos")
-            .menssaje(mensaje.toString())
+            .menssaje(mensaje)
             .uri(request.getRequestURI())
             .timestamp(LocalDateTime.now())
             .build();
