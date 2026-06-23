@@ -7,8 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Direccion {
 
     @Id
@@ -39,7 +42,7 @@ public class Direccion {
     @Column(name = "codigo_postal",nullable = false)
     private String codigoPostal;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "fk_usuario", nullable = false)
     private Usuario usuario;
 

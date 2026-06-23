@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +17,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +26,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Usuario {
 
     @Id
@@ -63,12 +67,12 @@ public class Usuario {
     @JoinColumn(name = "fk_estado",nullable = false)
     private EstadoUsuario estado;
 
-    @OneToOne(mappedBy = "usuario")
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Credencial credencial;
 
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<Telefono> telefonos;
 
-    @OneToMany(mappedBy = "usuario")
-    private List<Direccion> direcciones;
+    @OneToOne(mappedBy = "usuario",cascade = CascadeType.ALL)
+    private Direccion direccion;
 }
