@@ -6,5 +6,5 @@ import com.api.biblioteca.models.Credencial;
 
 @Repository
 public interface CredencialRepository extends JpaRepository<Credencial, Long> {
-
+    boolean existsByCorreo(String correo);
 }
