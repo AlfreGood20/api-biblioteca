@@ -3,6 +3,7 @@ package com.api.biblioteca.mappers;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import com.api.biblioteca.dtos.request.UsuarioRequest;
 import com.api.biblioteca.dtos.response.UsuarioResponse;
 import com.api.biblioteca.dtos.response.UsuarioResumen;
 import com.api.biblioteca.models.Usuario;
@@ -13,11 +14,19 @@ public interface UsuarioMapper {
     // Entity To Dto
     @Mapping(source = "estado.nombre", target = "estado")
     @Mapping(source = "rol.nombre", target = "rol")
-    @Mapping(target = "correo", ignore = true)
+    @Mapping(source = "credencial.correo", target = "correo")
     UsuarioResponse entityToDto(Usuario entity);
 
     @Mapping(target = "correo", ignore = true)
-    UsuarioResumen entirtyToResumen(Usuario entity);
+    UsuarioResumen entityToResumen(Usuario entity);
+
+    // Dto to entity
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "credencial", ignore = true)
+    @Mapping(target = "fechaRegistro", ignore = true)
+    @Mapping(target = "estado", ignore = true)
+    @Mapping(target = "rol", ignore = true)
+    Usuario dtoToEntity(UsuarioRequest request);
 
     List<UsuarioResponse> listEntityToListDto(List<Usuario> list);
 }
