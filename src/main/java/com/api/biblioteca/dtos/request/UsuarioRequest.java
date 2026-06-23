@@ -28,7 +28,13 @@ public record UsuarioRequest
     @NotBlank(message = "Es obligatorio")
     String genero,
 
+    String fotoUrl,
+
     String curp,
+
+    @NotNull(message = "Es obligatorio")
+    @JsonProperty("rol_id")
+    Long rolId,
 
     @Valid
     @NotEmpty(message = "Es obligatorio")

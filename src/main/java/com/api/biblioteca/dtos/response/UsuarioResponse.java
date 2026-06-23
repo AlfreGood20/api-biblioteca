@@ -25,6 +25,6 @@ public record UsuarioResponse
     String rol,
     String estado,
     List<TelefonoResponse> telefonos,
-    List<DireccionResponse> direcciones
+    DireccionResponse direccion
 ) {
 }
