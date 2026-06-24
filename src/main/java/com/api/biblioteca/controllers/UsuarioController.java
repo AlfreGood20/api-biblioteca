@@ -80,8 +80,4 @@ public class UsuarioController {
     public ResponseEntity<List<ReservaResponse>> getMethodName(@PathVariable Long id) {
         return ResponseEntity.ok().body(usuarioService.reservasPorUsuario(id));
     }
-    
-    
-    
-    
 }

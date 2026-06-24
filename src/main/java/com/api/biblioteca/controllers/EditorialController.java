@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.biblioteca.dtos.request.EditorialRequest;
 import com.api.biblioteca.models.Editorial;
 import com.api.biblioteca.services.EditorialService;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
@@ -45,6 +44,4 @@ public class EditorialController {
         editorialService.eliminarEditorialPorId(id);
         return ResponseEntity.noContent().build();
     }
-    
-
 }

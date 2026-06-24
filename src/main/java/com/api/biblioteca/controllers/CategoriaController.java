@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.biblioteca.dtos.request.CategoriaRequest;
 import com.api.biblioteca.models.Categoria;
 import com.api.biblioteca.services.CategoriaService;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
@@ -45,6 +44,4 @@ public class CategoriaController {
         categoriaService.eliminarCategoriaPorId(id);
         return ResponseEntity.noContent().build();
     }
-    
-
 }

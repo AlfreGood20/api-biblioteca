@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.api.biblioteca.models.Municipio;
 import com.api.biblioteca.services.MunicipioService;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
@@ -44,6 +43,4 @@ public class MunicipioController {
         municipioService.eliminarMunicipioPorId(id);
         return ResponseEntity.noContent().build();
     }
-    
-
 }
