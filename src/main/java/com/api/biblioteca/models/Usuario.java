@@ -67,12 +67,12 @@ public class Usuario {
     @JoinColumn(name = "fk_estado",nullable = false)
     private EstadoUsuario estado;
 
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Credencial credencial;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Telefono> telefonos;
 
-    @OneToOne(mappedBy = "usuario",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "usuario",cascade = CascadeType.ALL, orphanRemoval = true)
     private Direccion direccion;
 }

@@ -3,6 +3,7 @@ package com.api.biblioteca.models;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Prestamo {
 
     @Id
@@ -54,6 +57,6 @@ public class Prestamo {
     @JoinColumn(name = "fk_ejemplar", nullable = false)
     private Ejemplar ejemplar;
 
-    @OneToOne(mappedBy = "prestamo")
+    @OneToOne(mappedBy = "prestamo", cascade = CascadeType.ALL, orphanRemoval = true)
     private Multa multa;
 }
