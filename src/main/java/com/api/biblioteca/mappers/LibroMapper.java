@@ -14,7 +14,6 @@ public interface LibroMapper {
     @Mapping(source = "categoria.nombre", target = "categoria")
     @Mapping(source = "editorial.nombre", target = "editorial")
     @Mapping(source = "idioma.nombre", target = "idioma")
-    @Mapping(target = "totalEjemplares", ignore = true)
     LibroResponse entityToDto(Libro entity);
 
     // dto to entity
