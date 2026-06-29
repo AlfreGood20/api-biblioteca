@@ -18,8 +18,6 @@ public record LibroResponse
     String categoria,
     String editorial,
     String idioma,
-    List<AutorResponse> autores,
-    @JsonProperty("total_ejemplares")
-    int totalEjemplares
+    List<AutorResponse> autores
 ) {
 }

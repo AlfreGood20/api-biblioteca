@@ -1,6 +1,9 @@
 package com.api.biblioteca.dtos.request;
 
 import java.util.Set;
+
+import org.hibernate.validator.constraints.UniqueElements;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -44,6 +47,7 @@ public record LibroRequest
 
     @NotEmpty(message = "Es obligatorio")
     @JsonProperty("autores_id")
+    @UniqueElements(message = "No se permiten valores duplicados")
     Set<@Positive(message = "Los valores tiene que ser positivo") Long> autoresId
 ) {
 }
