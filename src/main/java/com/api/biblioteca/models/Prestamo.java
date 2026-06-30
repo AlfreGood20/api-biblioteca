@@ -53,7 +53,7 @@ public class Prestamo {
     @JoinColumn(name = "fk_estado", nullable = false)
     private EstadoPrestamo estado;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "fk_ejemplar", nullable = false)
     private Ejemplar ejemplar;
 

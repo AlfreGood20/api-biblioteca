@@ -7,7 +7,7 @@ import com.api.biblioteca.dtos.response.PrestamoResponse;
 
 public interface PrestamoService {
 
-    PrestamoResponse crearNuevo(PrestamoRequest request);
+    List<PrestamoResponse> crearNuevo(PrestamoRequest request);
 
     List<PrestamoResponse> obtenerPrestamos(Long estadoId, Long usuarioAdminId, Long usuarioId);
 
