@@ -37,9 +37,6 @@ public class Multa {
     @Column(name = "fecha_registro", updatable = false)
     private LocalDateTime fechaRegistro;
 
-    @Column(name = "costo_unitario", nullable = false)
-    private BigDecimal costoUnitario;
-
     @Column(name = "fecha_pago")
     private LocalDateTime fechaPago;
 
