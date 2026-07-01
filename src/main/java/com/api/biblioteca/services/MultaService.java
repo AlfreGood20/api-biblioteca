@@ -5,8 +5,6 @@ import com.api.biblioteca.dtos.response.MultaResponse;
 
 public interface MultaService {
 
-    MultaResponse crearMultas();
-
     List<MultaResponse> obtenerMultas(Long estadoId);
 
     MultaResponse pagarMulta(Long id);
