@@ -30,4 +30,6 @@ public interface PrestamoRepository extends JpaRepository<Prestamo, Long> {
     );
 
     List<Prestamo> findByEstado_NombreAndFechaLimiteBefore(EstadoPrestamoNombre nombre,LocalDate fechaLimite);
+
+    List<Prestamo> findByEstado_Nombre(EstadoPrestamoNombre estado);
 }

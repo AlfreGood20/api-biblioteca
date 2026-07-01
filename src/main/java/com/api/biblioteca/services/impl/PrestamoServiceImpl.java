@@ -1,10 +1,28 @@
 package com.api.biblioteca.services.impl;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.api.biblioteca.dtos.request.PrestamoRequest;
 import com.api.biblioteca.dtos.response.PrestamoResponse;
+import com.api.biblioteca.enums.EstadoEjemplarNombre;
+import com.api.biblioteca.enums.EstadoPrestamoNombre;
+import com.api.biblioteca.enums.EstadoUsuarioNombre;
+import com.api.biblioteca.exceptions.BusinessExeption;
+import com.api.biblioteca.exceptions.ResourceNotFoundException;
+import com.api.biblioteca.mappers.PrestamoMapper;
+import com.api.biblioteca.models.Ejemplar;
+import com.api.biblioteca.models.EstadoEjemplar;
+import com.api.biblioteca.models.EstadoPrestamo;
+import com.api.biblioteca.models.Prestamo;
+import com.api.biblioteca.models.Usuario;
+import com.api.biblioteca.repositorys.EjemplarRepository;
+import com.api.biblioteca.repositorys.EstadoEjemplarRepository;
+import com.api.biblioteca.repositorys.EstadoPrestamoRepository;
 import com.api.biblioteca.repositorys.PrestamoRepository;
+import com.api.biblioteca.repositorys.UsuarioRepository;
 import com.api.biblioteca.services.PrestamoService;
 import lombok.RequiredArgsConstructor;
 
@@ -13,29 +31,101 @@ import lombok.RequiredArgsConstructor;
 public class PrestamoServiceImpl implements PrestamoService{
     
     private final PrestamoRepository prestamoRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final EjemplarRepository ejemplarRepository;
+    private final EstadoPrestamoRepository estadoPrestamoRepository;
+    private final EstadoEjemplarRepository estadoEjemplarRepository;
+
+    private final PrestamoMapper prestamoMapper;
     
     @Override
-    public PrestamoResponse crearNuevo(PrestamoRequest request) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'crearNuevo'");
+    @Transactional
+    public List<PrestamoResponse> crearNuevo(PrestamoRequest request) {
+
+        Usuario usuario = usuarioRepository.findById(request.usuarioId())
+            .orElseThrow(()->new ResourceNotFoundException("Usuario no encontrado"));
+
+        if(usuario.getEstado().getNombre() != EstadoUsuarioNombre.ACTIVO){
+            throw new BusinessExeption("No se puede hacer prestamos a usuario, INACTIVO, SUSPENDIDO O BLOQUEADO.");
+        }
+
+        if(prestamoRepository.countByUsuarioAndMultaIsNotNull(usuario) >= 2){
+            throw new BusinessExeption("No se puede prestar a usuarios con mas de 2 multas.");
+        }
+
+        List<Ejemplar> ejemplares = request.ejemplaresId()
+            .stream()
+            .map(id -> {
+                return ejemplarRepository.findById(id)
+                    .orElseThrow(()-> new ResourceNotFoundException("Ejemplar con ID:"+id+" no encontrado."));
+            })
+            .map(ejemplar -> {
+                if(ejemplar.getEstado().getNombre() != EstadoEjemplarNombre.DISPONIBLE){
+                    throw new BusinessExeption("Ejemplar con ID:"+ejemplar.getId()+" se encuentra "+ejemplar.getEstado().getNombre().toString());
+                }
+                return ejemplar;
+            })
+            .toList();
+
+        List<Prestamo> prestamosPrestados = new ArrayList<>();
+
+       for (Ejemplar ejemplar : ejemplares) {
+
+            Prestamo prestamo = Prestamo.builder()
+                .fechaLimite(LocalDate.now().plusDays(15))
+                .fechaDevolucion(null)
+                .usuario(usuario)
+                .usuarioAdmin(null)
+                .estado(buscarPorNombre(EstadoPrestamoNombre.ACTIVO))
+                .ejemplar(ejemplar)
+                .build();
+            
+            ejemplar.setEstado(buscarEstadoEjemplarPorNombre(EstadoEjemplarNombre.PRESTADO));
+            prestamosPrestados.add(prestamoRepository.save(prestamo));
+       }
+
+       return prestamoMapper.listEntityToListDto(prestamosPrestados);
     }
 
     @Override
     public List<PrestamoResponse> obtenerPrestamos(Long estadoId, Long usuarioAdminId, Long usuarioId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'obtenerPrestamos'");
+        return prestamoMapper.listEntityToListDto(prestamoRepository.buscarPorParametros(estadoId, usuarioAdminId, usuarioId));
     }
 
     @Override
     public PrestamoResponse obtenerPrestamoPorId(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'obtenerPrestamoPorId'");
+        return prestamoMapper.entityToDto(prestamoRepository.findById(id)
+            .orElseThrow(()-> new ResourceNotFoundException("Prestamo no encontrado")));
     }
 
     @Override
+    @Transactional
     public PrestamoResponse devolverPrestamoPorId(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'devolverPrestamoPorId'");
+
+        Prestamo prestamo = prestamoRepository.findById(id)
+            .orElseThrow(()-> new ResourceNotFoundException("Prestamo no encontrado"));
+
+        if(prestamo.getEstado().getNombre() == EstadoPrestamoNombre.DEVUELTO){
+            throw new BusinessExeption("Prestamo ya se encuntra devuelto.");
+        }
+
+        prestamo.setFechaDevolucion(LocalDate.now());
+        prestamo.setEstado(buscarPorNombre(EstadoPrestamoNombre.DEVUELTO));
+        prestamo.getEjemplar().setEstado(buscarEstadoEjemplarPorNombre(EstadoEjemplarNombre.DISPONIBLE));
+
+        return prestamoMapper.entityToDto(prestamoRepository.save(prestamo));
+    }
+
+
+    // FUNCIONES REUTILIZABLES
+    private EstadoPrestamo buscarPorNombre(EstadoPrestamoNombre nombre){
+        return estadoPrestamoRepository.findByNombre(nombre)
+            .orElseThrow(()-> new ResourceNotFoundException("Estado prestamo no encontrado"));
+    }
+
+    private EstadoEjemplar buscarEstadoEjemplarPorNombre(EstadoEjemplarNombre nombre){
+        return estadoEjemplarRepository.findByNombre(nombre)
+            .orElseThrow(()-> new ResourceNotFoundException("Estado ejempar no encontrado"));
     }
     
 }
