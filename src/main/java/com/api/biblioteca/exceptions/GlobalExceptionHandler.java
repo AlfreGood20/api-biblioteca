@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,6 +45,21 @@ public class GlobalExceptionHandler {
             .build();
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+    //404 PARA MANEJAR USERNAME NO ENCONTRADO (CORREO NO ENCONTRADO)
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<?> usernameNotFound(UsernameNotFoundException ex, HttpServletRequest request){
+
+        ResponseExeption response = ResponseExeption.builder()
+            .status(HttpStatus.NOT_FOUND.value())
+            .error("Correo no encontrado")
+            .menssaje("Correo aun no se encuentra registrado en el sistema.")
+            .uri(request.getRequestURI())
+            .timestamp(LocalDateTime.now())
+            .build();
+            
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     //404
