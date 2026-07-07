@@ -10,12 +10,18 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     //400 VALIDACION DE NEGOCIO
+    @ExceptionHandler(BusinessExeption.class)
     public ResponseEntity<?> busineesProblem(BusinessExeption ex, HttpServletRequest request){
 
         ResponseExeption response = ResponseExeption.builder()
@@ -28,6 +34,83 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(response);
     }
+
+    // 401 NO ENVIO DATO IMPORTANTE (TOKENS ETC)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> llegaArgumentIsEmpety(HttpServletRequest request, IllegalArgumentException ex){
+
+        ResponseExeption response = ResponseExeption.builder()
+            .status(HttpStatus.UNAUTHORIZED.value())
+            .error("Dato no recibidos")
+            .menssaje(ex.getMessage())
+            .uri(request.getRequestURI())
+            .timestamp(LocalDateTime.now())
+            .build();
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    // 401 TOKEN ESTA EXPIRADO
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<?> tokenIsExpired(HttpServletRequest request){
+        
+        ResponseExeption response = ResponseExeption.builder()
+            .status(HttpStatus.UNAUTHORIZED.value())
+            .error("Token expirado")
+            .menssaje("Token recibido se encuntra expirado.")
+            .uri(request.getRequestURI())
+            .timestamp(LocalDateTime.now())
+            .build();
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    // 401 TOKEN MALFORMADO, ESTRUCTURA DEL TOKEN ESTA MAL
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<?> tokenMalformed(HttpServletRequest request){
+        
+        ResponseExeption response = ResponseExeption.builder()
+            .status(HttpStatus.UNAUTHORIZED.value())
+            .error("Token malformado")
+            .menssaje("Token recibido esta malformado. No cumple con la estructura.")
+            .uri(request.getRequestURI())
+            .timestamp(LocalDateTime.now())
+            .build();
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    // 401 TOKEN NO COINCIDE CON LA FIRMA DEL SERVIDOR
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<?> tokenSignature(HttpServletRequest request){
+        
+        ResponseExeption response = ResponseExeption.builder()
+            .status(HttpStatus.UNAUTHORIZED.value())
+            .error("Token no coincide")
+            .menssaje("Token enviado no coincide con la clave secreta valida del servidor.")
+            .uri(request.getRequestURI())
+            .timestamp(LocalDateTime.now())
+            .build();
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    // 401 FORMATO DEL TOKEN NO ES COMPATIBLE O UTILIZA UN ALGORITMO NO SOPORTADO
+    @ExceptionHandler(UnsupportedJwtException.class)
+    public ResponseEntity<?> tokenUnsupported(HttpServletRequest request){
+        
+        ResponseExeption response = ResponseExeption.builder()
+            .status(HttpStatus.UNAUTHORIZED.value())
+            .error("Token no compatible")
+            .menssaje("Token enviado no es compatible o utiliza otro algoritmo no soportado.")
+            .uri(request.getRequestURI())
+            .timestamp(LocalDateTime.now())
+            .build();
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+
 
     //400 VALIDACIONES DE FORMULARIO
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -46,6 +129,8 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(response);
     }
+
+
 
     //404 PARA MANEJAR USERNAME NO ENCONTRADO (CORREO NO ENCONTRADO)
     @ExceptionHandler(UsernameNotFoundException.class)
