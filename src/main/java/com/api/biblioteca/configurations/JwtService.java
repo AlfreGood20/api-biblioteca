@@ -67,6 +67,10 @@ public class JwtService {
         return obtenerClaims(token).getSubject();
     }
 
+    public Date obtenerFechaExpiracion(String token){
+        return obtenerClaims(token).getExpiration();
+    }
+
     public boolean esValidoToken(String token, CustomUserDetails usuario){
         Claims claims = obtenerClaims(token);
         String username = claims.getSubject();
