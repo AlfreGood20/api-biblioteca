@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -103,6 +104,20 @@ public class GlobalExceptionHandler {
             .status(HttpStatus.UNAUTHORIZED.value())
             .error("Token no compatible")
             .menssaje("Token enviado no es compatible o utiliza otro algoritmo no soportado.")
+            .uri(request.getRequestURI())
+            .timestamp(LocalDateTime.now())
+            .build();
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(CredentialsExpiredException.class)
+    public ResponseEntity<?> credentialsExpired(CredentialsExpiredException ex, HttpServletRequest request){
+
+        ResponseExeption response = ResponseExeption.builder()
+            .status(HttpStatus.UNAUTHORIZED.value())
+            .error("Credenciales expirado")
+            .menssaje(ex.getMessage())
             .uri(request.getRequestURI())
             .timestamp(LocalDateTime.now())
             .build();
