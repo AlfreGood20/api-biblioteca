@@ -16,15 +16,24 @@ import com.api.biblioteca.dtos.response.UsuarioResponse;
 import com.api.biblioteca.enums.EstadoUsuarioNombre;
 import com.api.biblioteca.enums.RolNombre;
 import com.api.biblioteca.exceptions.ConflictExeption;
+import com.api.biblioteca.exceptions.ResourceNotFoundException;
+import com.api.biblioteca.mappers.DireccionMapper;
+import com.api.biblioteca.mappers.TelefonoMapper;
 import com.api.biblioteca.mappers.UsuarioMapper;
 import com.api.biblioteca.models.Credencial;
+import com.api.biblioteca.models.Direccion;
 import com.api.biblioteca.models.EstadoUsuario;
+import com.api.biblioteca.models.Municipio;
 import com.api.biblioteca.models.Rol;
+import com.api.biblioteca.models.Telefono;
+import com.api.biblioteca.models.TipoTelefono;
 import com.api.biblioteca.models.Token;
 import com.api.biblioteca.models.Usuario;
 import com.api.biblioteca.repositorys.CredencialRepository;
 import com.api.biblioteca.repositorys.EstadoUsuarioRepository;
+import com.api.biblioteca.repositorys.MunicipioRepository;
 import com.api.biblioteca.repositorys.RolRepository;
+import com.api.biblioteca.repositorys.TipoTelefonoRepository;
 import com.api.biblioteca.repositorys.TokenRepository;
 import com.api.biblioteca.repositorys.UsuarioRepository;
 import com.api.biblioteca.services.AuthService;
@@ -47,6 +56,10 @@ public class AuthServiceImpl implements AuthService{
     private final CredencialRepository credencialRepository;
     private final RolRepository rolRepository;
     private final EstadoUsuarioRepository estadoUsuarioRepository;
+    private final MunicipioRepository municipioRepository;
+    private final DireccionMapper direccionMapper;
+    private final TelefonoMapper telefonoMapper;
+    private final TipoTelefonoRepository tipoTelefonoRepository;
 
     @Override
     @Transactional
@@ -99,9 +112,11 @@ public class AuthServiceImpl implements AuthService{
         
         Usuario usuario = usuarioMapper.dtoPublicToEntity(request);
 
+
         Credencial credencial = Credencial.builder()
             .correo(request.credencial().correo())
             .contrasena(encoder.encode(request.credencial().contrasena()))
+            .usuario(usuario)
             .build();
 
         Rol rol = rolRepository.findByNombre(RolNombre.USUARIO)
@@ -110,6 +125,29 @@ public class AuthServiceImpl implements AuthService{
         EstadoUsuario estado = estadoUsuarioRepository.findByNombre(EstadoUsuarioNombre.ACTIVO)
             .orElseThrow();
 
+        List<Telefono> telefonos = request.telefonos()
+            .stream()
+            .map(t -> {
+                Telefono telefono = telefonoMapper.dtoToEntity(t);
+                telefono.setUsuario(usuario);
+                TipoTelefono tipo = tipoTelefonoRepository.findById(t.tipoId())
+                    .orElseThrow(()-> new ResourceNotFoundException("Tipo telefono no encontrado"));
+
+                telefono.setTipo(tipo);
+
+                return telefono;
+            })
+            .toList();
+        usuario.setTelefonos(telefonos);
+
+        Direccion direccion = direccionMapper.dtoToEntity(request.direccion());
+        direccion.setUsuario(usuario);
+
+        Municipio municipio = municipioRepository.findById(request.direccion().municipioId())
+            .orElseThrow(() -> new ResourceNotFoundException("Municipio no encontrado."));
+        direccion.setMunicipio(municipio);
+
+        usuario.setDireccion(direccion);
         usuario.setCredencial(credencial);
         usuario.setRol(rol);
         usuario.setEstado(estado);
@@ -163,7 +201,7 @@ public class AuthServiceImpl implements AuthService{
         Cookie cookie = new Cookie("TOKEN_REFRESH", token);
         cookie.setHttpOnly(true);
         cookie.setSecure(false);
-        cookie.setPath("/auth/refresh");
+        cookie.setPath("/api/auth");
         cookie.setMaxAge(maxAge);
 
         return cookie;
