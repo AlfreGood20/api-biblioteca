@@ -192,6 +192,20 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
+    @ExceptionHandler(ConflictExeption.class)
+    public ResponseEntity<?> conflict(ConflictExeption ex, HttpServletRequest request){
+        
+        ResponseExeption response = ResponseExeption.builder()
+            .status(HttpStatus.CONFLICT.value())
+            .error("Conflicto de recurso")
+            .menssaje(ex.getMessage())
+            .uri(request.getRequestURI())
+            .timestamp(LocalDateTime.now())
+            .build();
+
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
     //500
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> manejarErrorInesperado(Exception ex, HttpServletRequest request){
