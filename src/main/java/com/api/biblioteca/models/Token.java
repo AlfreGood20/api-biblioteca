@@ -1,5 +1,8 @@
 package com.api.biblioteca.models;
 
+
+import java.util.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,6 +35,9 @@ public class Token {
     private String tokenRefresh;
 
     private boolean revocado;
+
+    @Column(name = "fecha_expiracion", updatable = false)
+    private Date fechaExpiracion;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
