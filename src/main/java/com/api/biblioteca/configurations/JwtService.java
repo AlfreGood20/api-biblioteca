@@ -3,6 +3,8 @@ package com.api.biblioteca.configurations;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,7 @@ public class JwtService {
 
     public String generarTokenAccess(CustomUserDetails usuario){
         return Jwts.builder()
+            .id(UUID.randomUUID().toString())
             .claims(payload(usuario))
             .subject(usuario.getUsername())
             .issuedAt(new Date())
@@ -48,6 +51,7 @@ public class JwtService {
 
     public String generarTokenRefresh(CustomUserDetails usuario){
         return Jwts.builder()
+            .id(UUID.randomUUID().toString())
             .subject(usuario.getUsername())
             .issuedAt(new Date())
             .expiration(new Date(System.currentTimeMillis() + expiracionRefresh))

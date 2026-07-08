@@ -50,10 +50,10 @@ public class FilterJwt extends OncePerRequestFilter{
                 }
             }
 
-            filterChain.doFilter(request, response);
-
         }catch(Exception ex){
             handlerExceptionResolver.resolveException(request, response, filterChain, ex);
+        }finally{
+            filterChain.doFilter(request, response);
         }
     }
 
