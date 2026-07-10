@@ -1,10 +1,12 @@
 package com.api.biblioteca.exceptions;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -103,7 +105,7 @@ public class GlobalExceptionHandler {
         ResponseExeption response = ResponseExeption.builder()
             .status(HttpStatus.UNAUTHORIZED.value())
             .error("Token no compatible")
-            .menssaje("Token enviado no es compatible o utiliza otro algoritmo no soportado.")
+            .menssaje("Token enviado no es compatible y/o utiliza otro algoritmo no soportado.")
             .uri(request.getRequestURI())
             .timestamp(LocalDateTime.now())
             .build();
@@ -116,7 +118,7 @@ public class GlobalExceptionHandler {
 
         ResponseExeption response = ResponseExeption.builder()
             .status(HttpStatus.UNAUTHORIZED.value())
-            .error("Credenciales expirado")
+            .error("Credenciales invalida")
             .menssaje(ex.getMessage())
             .uri(request.getRequestURI())
             .timestamp(LocalDateTime.now())
@@ -125,6 +127,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> badCredentials(HttpServletRequest request) {
+
+        ResponseExeption response = ResponseExeption.builder()
+            .status(HttpStatus.UNAUTHORIZED.value())
+            .error("Credenciales invalida")
+            .menssaje("Correo y/o contraseña inavalidas.")
+            .uri(request.getRequestURI())
+            .timestamp(LocalDateTime.now())
+            .build();
+        
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
 
 
     //400 VALIDACIONES DE FORMULARIO
@@ -214,6 +229,20 @@ public class GlobalExceptionHandler {
             .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
             .error("Error inesperado")
             .menssaje(ex.getMessage())
+            .uri(request.getRequestURI())
+            .timestamp(LocalDateTime.now())
+            .build();
+        
+        return ResponseEntity.internalServerError().body(mensaje);
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<?> manejarErrorIO(HttpServletRequest request){
+
+        ResponseExeption mensaje= ResponseExeption.builder()
+            .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+            .error("Error inesperado")
+            .menssaje("Ocurrio un error en el fichero uploads o otro tipo de error.")
             .uri(request.getRequestURI())
             .timestamp(LocalDateTime.now())
             .build();
