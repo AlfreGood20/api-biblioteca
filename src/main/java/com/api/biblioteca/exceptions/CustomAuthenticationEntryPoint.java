@@ -31,8 +31,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint{
 
         ResponseExeption responseHttp = ResponseExeption.builder()
             .status(401)
-            .error(HttpStatus.FORBIDDEN.getReasonPhrase())
-            .menssaje("Sin permiso a este recurso")
+            .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+            .menssaje("No estas autenticado.")
             .uri(request.getRequestURI())
             .timestamp(LocalDateTime.now())
             .build();

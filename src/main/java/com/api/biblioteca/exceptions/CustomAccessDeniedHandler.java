@@ -30,7 +30,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler{
         ResponseExeption responseHtpp = ResponseExeption.builder()
             .status(403)
             .error(HttpStatus.FORBIDDEN.getReasonPhrase())
-            .menssaje("Acceso denegado a este recurso")
+            .menssaje("Acceso denegado a este recurso.")
             .uri(request.getRequestURI())
             .timestamp(LocalDateTime.now())
             .build();
