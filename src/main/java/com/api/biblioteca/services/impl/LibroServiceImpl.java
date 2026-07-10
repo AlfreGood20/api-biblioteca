@@ -1,7 +1,12 @@
 package com.api.biblioteca.services.impl;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import com.api.biblioteca.dtos.request.LibroRequest;
 import com.api.biblioteca.dtos.response.AutorResponse;
 import com.api.biblioteca.dtos.response.EjemplarResponse;
@@ -33,14 +38,16 @@ public class LibroServiceImpl implements LibroService{
     private final EditorialRepository editorialRepository;
     private final AutorRepository autorRepository;
     private final IdiomaRepository idiomaRepository;
-
     private final LibroMapper libroMapper;
     private final AutorMapper autorMapper;
     private final EjemplarMapper ejemplarMapper;
 
+    private final Path uploadPath;
 
+    @SuppressWarnings("null")
     @Override
-    public LibroResponse crearNuevo(LibroRequest request) {
+    public LibroResponse crearNuevo(LibroRequest request, MultipartFile file) {
+
         Categoria categoria = buscarCategoriaPorId(request.categoriaId());
         Editorial editorial = buscarEditorialPorId(request.editorialId());
         Idioma idioma = buscarIdiomaPorId(request.idiomaId());
@@ -55,6 +62,10 @@ public class LibroServiceImpl implements LibroService{
         libro.setEditorial(editorial);
         libro.setIdioma(idioma);
         libro.setAutores(autores);
+
+        if(file != null || !file.isEmpty()){
+            libro.setPortadaUrl(obtenerUrlPortada(file));
+        }
         
         return libroMapper.entityToDto(libroRepository.save(libro));
     }
@@ -88,8 +99,9 @@ public class LibroServiceImpl implements LibroService{
         return ejemplarMapper.listEntityToListDto(libro.getEjemplares());
     }
 
+    @SuppressWarnings("null")
     @Override
-    public LibroResponse actualizarLibro(LibroRequest request, Long id) {
+    public LibroResponse actualizarLibro(LibroRequest request, Long id, MultipartFile file) {
         Libro libro = libroRepository.findById(id)
             .orElseThrow(()->new ResourceNotFoundException("Libro no encontrado"));
 
@@ -102,12 +114,15 @@ public class LibroServiceImpl implements LibroService{
             .map(aId -> buscarAutorPorId(aId))
             .toList();
 
+        if(file != null || !file.isEmpty()){
+            libro.setPortadaUrl(obtenerUrlPortada(file));
+        }
+        
         libro.setTitulo(request.titulo());
         libro.setSinopsis(request.sinopsis());
         libro.setIsbn(request.isbn());
         libro.setNumeroPaginas(request.numeroPaginas());
         libro.setAnio(request.anio());
-        libro.setPortadaUrl(null); //POR DEFINIR NEGOCIO
         libro.setCategoria(categoria);
         libro.setEditorial(editorial);
         libro.setIdioma(idioma);
@@ -148,5 +163,20 @@ public class LibroServiceImpl implements LibroService{
     private Idioma buscarIdiomaPorId(Long id){
         return idiomaRepository.findById(id)
             .orElseThrow(()->new ResourceNotFoundException("Idioma no encontrado"));
+    }
+
+    private String obtenerUrlPortada(MultipartFile file){
+        String nombreImagenOriginal = file.getOriginalFilename();
+
+        String nombreImagen = 
+            UUID.randomUUID().toString().substring(0,10) +
+            nombreImagenOriginal.substring(nombreImagenOriginal.indexOf("."));
+
+        try {
+            Path rutaCompleta = uploadPath.resolve(nombreImagen);
+            Files.copy(file.getInputStream(), rutaCompleta);
+        } catch (IOException ex) {}
+
+        return "/uploads/"+nombreImagen;
     }
 }

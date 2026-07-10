@@ -1,6 +1,7 @@
 package com.api.biblioteca.services;
 
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 import com.api.biblioteca.dtos.request.LibroRequest;
 import com.api.biblioteca.dtos.response.AutorResponse;
 import com.api.biblioteca.dtos.response.EjemplarResponse;
@@ -8,7 +9,7 @@ import com.api.biblioteca.dtos.response.LibroResponse;
 
 public interface LibroService {
 
-    LibroResponse crearNuevo(LibroRequest request);
+    LibroResponse crearNuevo(LibroRequest request, MultipartFile file);
 
     List<LibroResponse> obtenerLibros(String titulo, String isbn, Long categoriaId, Long editorialId, Long idiomaId);
 
@@ -18,7 +19,7 @@ public interface LibroService {
 
     List<EjemplarResponse> obtenerEjemplaresLibroPorId(Long id);
 
-    LibroResponse actualizarLibro(LibroRequest request, Long id);
+    LibroResponse actualizarLibro(LibroRequest request, Long id, MultipartFile file);
 
     void eliminarLibroPorId(Long id);
 }
