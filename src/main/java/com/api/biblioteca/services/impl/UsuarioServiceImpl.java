@@ -2,6 +2,8 @@ package com.api.biblioteca.services.impl;
 
 import com.api.biblioteca.repositorys.ReservaRepository;
 import java.util.List;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.api.biblioteca.dtos.request.UsuarioRequest;
@@ -62,6 +64,8 @@ public class UsuarioServiceImpl implements UsuarioService{
     private final PrestamoRepository prestamoRepository;
     private final ReservaRepository reservaRepository;
 
+    private final PasswordEncoder encoder;
+
     @Override
     @Transactional
     public UsuarioResponse crearNuevo(UsuarioRequest request) {
@@ -79,7 +83,7 @@ public class UsuarioServiceImpl implements UsuarioService{
         }
 
         Credencial credencial = Credencial.builder()
-            .contrasena(request.credencial().contrasena()) //FALTA CODEAR LA CONTRASENA
+            .contrasena(encoder.encode(request.credencial().contrasena())) //FALTA CODEAR LA CONTRASENA
             .correo(request.credencial().correo())
             .usuario(nuevo).build();
 
