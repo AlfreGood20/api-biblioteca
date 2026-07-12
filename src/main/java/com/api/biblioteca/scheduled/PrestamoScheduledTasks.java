@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,11 +33,11 @@ public class PrestamoScheduledTasks {
 
     private final BigDecimal COSTO_POR_DIA = new BigDecimal("15.00");
 
-    @EventListener(ApplicationReadyEvent.class)
+    /*@EventListener(ApplicationReadyEvent.class)
     public void alIniciar() {
         log.info("Revisando préstamos vencidos y multas actulizar al iniciar...");
         consultarPrestamosVencidosYGenerarMultas();
-    }
+    }*/
 
     @Scheduled(cron = "0 0 1 * * *")
     @Transactional
