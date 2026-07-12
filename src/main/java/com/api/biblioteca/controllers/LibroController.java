@@ -2,6 +2,7 @@ package com.api.biblioteca.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import com.api.biblioteca.dtos.request.LibroRequest;
 import com.api.biblioteca.dtos.response.AutorResponse;
 import com.api.biblioteca.dtos.response.EjemplarResponse;
@@ -20,9 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
-
-
 @RestController
 @RequestMapping("api/libros")
 @RequiredArgsConstructor
@@ -31,11 +29,11 @@ public class LibroController {
     private final LibroService libroService;
 
     @PostMapping("/")
-    public ResponseEntity<LibroResponse> crearNuevo(@Valid @RequestBody LibroRequest request) {
-        return new ResponseEntity<LibroResponse>(libroService.crearNuevo(request), HttpStatus.CREATED);
+    public ResponseEntity<LibroResponse> crearNuevo(@Valid @RequestBody LibroRequest request, MultipartFile file) {
+        return new ResponseEntity<LibroResponse>(libroService.crearNuevo(request, file), HttpStatus.CREATED);
     }
 
-    @GetMapping("/")
+    @GetMapping("/public")
     public ResponseEntity<List<LibroResponse>> obtenerLibros(
         @RequestParam(required = false) String titulo,
         @RequestParam(required = false) String isbn,
@@ -43,15 +41,15 @@ public class LibroController {
         @RequestParam(required = false) Long editorialId,
         @RequestParam(required = false) Long idiomaid
     ) {
-        return ResponseEntity.ok().body(libroService.obtenerLibros(titulo, isbn, null, null, null));
+        return ResponseEntity.ok().body(libroService.obtenerLibros(titulo, isbn, categoriaId, editorialId, idiomaid));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/public/{id}")
     public ResponseEntity<LibroResponse> obtenerPorId(@PathVariable Long id) {
         return ResponseEntity.ok().body(libroService.obtenerLibroPorId(id));
     }
 
-    @GetMapping("/{id}/autores")
+    @GetMapping("/public/{id}/autores")
     public ResponseEntity<List<AutorResponse>> obtenerAutoresDeUnLibro(@PathVariable Long id) {
         return ResponseEntity.ok().body(libroService.obtenerAutoresDeUnLibro(id));
     }
@@ -62,17 +60,13 @@ public class LibroController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LibroResponse> actualizarLibro(@Valid @RequestBody LibroRequest request, @PathVariable Long id) {
-        return ResponseEntity.ok().body(libroService.actualizarLibro(request, id));
+    public ResponseEntity<LibroResponse> actualizarLibro(@Valid @RequestBody LibroRequest request, @PathVariable Long id, MultipartFile file) {
+        return ResponseEntity.ok().body(libroService.actualizarLibro(request, id, file));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarLibroPorId(@PathVariable Long id){
         libroService.eliminarLibroPorId(id);
         return ResponseEntity.noContent().build();
-    }    
-    
-    
-    
-    
+    }        
 }
