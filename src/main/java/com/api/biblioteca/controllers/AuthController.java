@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +42,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<UsuarioResponse> registrarse(@Valid @RequestBody UsuarioPublicRequest request) {
-        return ResponseEntity.ok(authService.registrarse(request));
+        return new ResponseEntity<UsuarioResponse>(authService.registrarse(request), HttpStatus.CREATED);
     }
 }

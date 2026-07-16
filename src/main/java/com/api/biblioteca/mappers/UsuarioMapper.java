@@ -3,6 +3,7 @@ package com.api.biblioteca.mappers;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import com.api.biblioteca.dtos.request.UsuarioPublicRequest;
 import com.api.biblioteca.dtos.request.UsuarioRequest;
 import com.api.biblioteca.dtos.response.UsuarioResponse;
 import com.api.biblioteca.dtos.response.UsuarioResumen;
@@ -26,7 +27,19 @@ public interface UsuarioMapper {
     @Mapping(target = "fechaRegistro", ignore = true)
     @Mapping(target = "estado", ignore = true)
     @Mapping(target = "rol", ignore = true)
+    @Mapping(target = "tokens", ignore = true)
+    @Mapping(target = "reservas", ignore = true)
     Usuario dtoToEntity(UsuarioRequest request);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "fechaRegistro", ignore = true)
+    @Mapping(target = "credencial", ignore = true)
+    @Mapping(target = "tokens", ignore = true)
+    @Mapping(target = "rol", ignore = true)
+    @Mapping(target = "estado", ignore = true)
+    @Mapping(target = "fotoUrl", ignore = true)
+    @Mapping(target = "reservas", ignore = true)
+    Usuario dtoPublicToEntity(UsuarioPublicRequest request);
 
     List<UsuarioResponse> listEntityToListDto(List<Usuario> list);
 }
