@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.api.biblioteca.configurations.CustomUserDetails;
 import com.api.biblioteca.dtos.request.UsuarioRequest;
 import com.api.biblioteca.dtos.response.MultaResponse;
 import com.api.biblioteca.dtos.response.PrestamoResponse;
@@ -41,9 +43,11 @@ import com.api.biblioteca.repositorys.TipoTelefonoRepository;
 import com.api.biblioteca.repositorys.UsuarioRepository;
 import com.api.biblioteca.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UsuarioServiceImpl implements UsuarioService{
 
 
@@ -169,8 +173,14 @@ public class UsuarioServiceImpl implements UsuarioService{
         return reservaMapper.listEntityToListDto(reservaRepository.findByUsuario(usuario));
     }
 
+    
+    @Override
+    public UsuarioResponse obtenerPerfil(CustomUserDetails usuario) {
 
-
+        Usuario usuarioFinal = buscarUsuarioPorId(usuario.id());
+        
+        return usuarioMapper.entityToDto(usuarioFinal);
+    }
 
     
     //FUNCIONES REUTILIZABLE
@@ -208,5 +218,4 @@ public class UsuarioServiceImpl implements UsuarioService{
         return tipoTelefonoRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Tipo de telefono no encontrado"));
     }
-
 }

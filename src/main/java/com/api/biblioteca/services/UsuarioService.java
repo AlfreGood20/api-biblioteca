@@ -1,6 +1,8 @@
 package com.api.biblioteca.services;
 
 import java.util.List;
+
+import com.api.biblioteca.configurations.CustomUserDetails;
 import com.api.biblioteca.dtos.request.UsuarioRequest;
 import com.api.biblioteca.dtos.response.MultaResponse;
 import com.api.biblioteca.dtos.response.PrestamoResponse;
@@ -29,4 +31,7 @@ public interface UsuarioService {
     List<MultaResponse> multasPorUsuario(Long id);
 
     List<ReservaResponse> reservasPorUsuario(Long id);
+
+    // PARA PERFIL
+    UsuarioResponse obtenerPerfil (CustomUserDetails usuario);
 }
