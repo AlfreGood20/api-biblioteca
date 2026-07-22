@@ -1,9 +1,7 @@
 package com.api.biblioteca.dtos.request;
 
 import java.util.Set;
-
 import org.hibernate.validator.constraints.UniqueElements;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -26,9 +24,6 @@ public record LibroRequest
 
     @Positive(message = "El valor tiene ser positivo")
     int anio,
-
-    @JsonProperty("portada_url")
-    String portadaUrl,
 
     @NotNull(message = "Es obligatorio")
     @Positive(message = "El valor tiene que ser positivo")
