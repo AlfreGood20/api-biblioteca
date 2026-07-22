@@ -11,7 +11,7 @@ public record DireccionRequest
 
     @NotNull(message = "Es obligatorio")
     @Positive(message = "El valor tiene que ser positivo")
-    @JsonProperty("municiopio_id")
+    @JsonProperty("municipio_id")
     Long municipioId,
 
     @NotBlank(message = "Es obligatorio")
